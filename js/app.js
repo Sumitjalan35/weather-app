@@ -1,5 +1,5 @@
-// ====== CONFIG ======
-const apiKey = "fe26f9b7cd68727512db54822aa9e2f6"; // Already provided
+
+const apiKey = "fe26f9b7cd68727512db54822aa9e2f6"; 
 const weatherIcons = {
   clear: "fa-sun",
   clouds: "fa-cloud",
@@ -23,7 +23,6 @@ const backgroundMap = {
   haze: "mist",
 };
 
-// ====== DOM ELEMENTS ======
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
 const locationBtn = document.getElementById("locationBtn");
@@ -37,7 +36,6 @@ const errorText = document.getElementById("errorText");
 const background = document.getElementById("background");
 const themeToggle = document.getElementById("themeToggle");
 
-// Current weather fields
 const cityName = document.getElementById("cityName");
 const countryName = document.getElementById("countryName");
 const currentTime = document.getElementById("currentTime");
@@ -50,7 +48,6 @@ const windSpeed = document.getElementById("windSpeed");
 const pressure = document.getElementById("pressure");
 const visibility = document.getElementById("visibility");
 
-// ====== UTILS ======
 function setLoading(isLoading) {
   loadingDiv.style.display = isLoading ? "block" : "none";
   currentWeatherDiv.style.display = isLoading ? "none" : "block";
@@ -78,7 +75,7 @@ function getWeatherIcon(weatherType) {
 }
 
 function formatTime(dt, timezone) {
-  // dt: unix timestamp, timezone: seconds offset
+
   const local = new Date((dt + timezone) * 1000);
   return local.toLocaleString([], { hour: '2-digit', minute: '2-digit', hour12: true, weekday: 'short', month: 'short', day: 'numeric' });
 }
@@ -95,16 +92,14 @@ function metersToKm(m) {
   return (m / 1000).toFixed(1);
 }
 
-// ====== MAIN WEATHER FETCH ======
 async function fetchWeather(city) {
   setLoading(true);
   try {
-    // Current weather
+
     const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`);
     if (!weatherRes.ok) throw new Error("City not found");
     const weatherData = await weatherRes.json();
 
-    // Forecast
     const forecastRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`);
     if (!forecastRes.ok) throw new Error("Forecast not found");
     const forecastData = await forecastRes.json();
@@ -118,12 +113,11 @@ async function fetchWeather(city) {
 async function fetchWeatherByCoords(lat, lon) {
   setLoading(true);
   try {
-    // Current weather
+   
     const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
     if (!weatherRes.ok) throw new Error("Location not found");
     const weatherData = await weatherRes.json();
 
-    // Forecast
     const forecastRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
     if (!forecastRes.ok) throw new Error("Forecast not found");
     const forecastData = await forecastRes.json();
@@ -134,9 +128,9 @@ async function fetchWeatherByCoords(lat, lon) {
   }
 }
 
-// ====== RENDERING ======
+
 function renderWeather(weather, forecast) {
-  // Current weather
+
   const weatherType = weather.weather[0].main.toLowerCase();
   updateBackground(weatherType);
   cityName.textContent = weather.name;
@@ -151,7 +145,7 @@ function renderWeather(weather, forecast) {
   pressure.textContent = weather.main.pressure + " hPa";
   visibility.textContent = metersToKm(weather.visibility) + " km";
 
-  // 5-day forecast (one per day, at 12:00)
+
   const daily = {};
   forecast.list.forEach(item => {
     const date = item.dt_txt.split(" ")[0];
@@ -178,7 +172,7 @@ function renderWeather(weather, forecast) {
   errorMessage.style.display = "none";
 }
 
-// ====== EVENT HANDLERS ======
+
 searchBtn.addEventListener("click", () => {
   const city = cityInput.value.trim();
   if (city) fetchWeather(city);
@@ -207,7 +201,7 @@ locationBtn.addEventListener("click", () => {
   }
 });
 
-// ====== THEME TOGGLE ======
+
 function setTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
@@ -224,16 +218,10 @@ themeToggle.addEventListener("click", () => {
   setTheme(saved || "light");
 })();
 
-// ====== INIT ======
+
 setLoading(false);
 currentWeatherDiv.style.display = "none";
 forecastSection.style.display = "none";
 errorMessage.style.display = "none";
 
-// Optionally, auto-fetch weather for user's location on load
-// Uncomment below to enable:
-// if (navigator.geolocation) {
-//   navigator.geolocation.getCurrentPosition(
-//     pos => fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude)
-//   );
-// }
+
